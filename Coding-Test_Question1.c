@@ -1,21 +1,30 @@
 #include<stdio.h>
 #include<stdlib.h>
-enum Operation { ADD, SUB, MUL, DIV, FIB };
-
-struct Node {
-    enum Operation op;
+typedef struct Node {
+    enum Operation { ADD, SUB, MUL, DIV, FIB } op;
     struct Node *left;
     struct Node *right;
     int result;
-};
+} Node;
 
-struct Node* makeFunc(enum Operation op) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+Node* makeFunc(enum Operation op){
+
+Node* newNode = ( Node*)malloc(sizeof( Node));
     newNode->op = op;
-    return newNode;
+        return newNode;
 }
 
-void calc(struct Node* node) {
+int fibonacci(int n) {
+    int a = 1, b = 2, c = 0;
+    for (int i = 2; i <= n; i++) {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}
+
+void calc(Node* node) {
     if (node->op == ADD) {
         node->result = node->left->result + node->right->result;
     } else if (node->op == SUB) {
@@ -25,42 +34,35 @@ void calc(struct Node* node) {
     } else if (node->op == DIV) {
         node->result = node->left->result / node->right->result;
     } else if (node->op == FIB) {
-        int n = node->left->result;
-        int a = 0, b = 1;
-        for (int i = 2; i <= n; i++) {
-            int c = a + b;
-            a = b;
-            b = c;
-        }
-        node->result = b;
+        node->result = fibonacci(node->left->result);
     }
 }
 
 int main() {
-    struct Node *add = makeFunc(ADD);
-    add->left = (struct Node*)malloc(sizeof(struct Node));
+    Node *add = makeFunc(ADD);
+    add->left = (Node*)malloc(sizeof(Node));
     add->left->result = 10;
-    add->right = (struct Node*)malloc(sizeof(struct Node));
+    add->right = (Node*)malloc(sizeof(Node));
     add->right->result = 6;
 
-    struct Node *mul = makeFunc(MUL);
-    mul->left = (struct Node*)malloc(sizeof(struct Node));
+    Node *mul = makeFunc(MUL);
+    mul->left = (Node*)malloc(sizeof(Node));
     mul->left->result = 5;
-    mul->right = (struct Node*)malloc(sizeof(struct Node));
+    mul->right = (Node*)malloc(sizeof(Node));
     mul->right->result = 4;
 
-    struct Node *sub = makeFunc(SUB);
+    Node *sub = makeFunc(SUB);
     sub->left = add;
     sub->right = mul;
 
-    struct Node *fibo = makeFunc(FIB);
+    Node *fibo = makeFunc(FIB);
     fibo->left = sub;
-
+    
     calc(add);
     calc(mul);
     calc(sub);
     calc(fibo);
-
+ 
     printf("Fibo: %d\n", fibo->result);
     printf("add: %d\n", add->result);
     printf("mul: %d\n", mul->result);
